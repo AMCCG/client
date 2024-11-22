@@ -1,12 +1,17 @@
+import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/theme/theme.dart';
 import 'features/auth/view/pages/signup_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final container = ProviderContainer();
+  await container.read(authViewModelProvider.notifier).initSharedPreferences();
   runApp(
-    ProviderScope(
+    UncontrolledProviderScope(
+      container: container,
       child: const MyApp(),
     ),
   );
