@@ -91,11 +91,12 @@ class AuthRemoteRepository {
         },
       );
       final resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
+
       if (response.statusCode != 200) {
         return Left(AppFailure(resBodyMap['detail']));
       }
       return Right(
-        UserModel.fromMap(resBodyMap['user']).copyWith(
+        UserModel.fromMap(resBodyMap).copyWith(
           token: token,
         ),
       );

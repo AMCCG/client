@@ -1,5 +1,4 @@
 import 'package:client/core/theme/app_pallete.dart';
-import 'package:client/features/auth/repositories/auth_remote_repository.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:client/features/auth/view/widgets/custom_field.dart';
 import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
@@ -25,11 +24,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
-    formKey.currentState!.validate();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(
+      authViewModelProvider.select((val) => val?.isLoading == true),
+    );
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -65,9 +66,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               AuthGradientButton(
                 buttonText: "Sign In",
                 onTap: () async {
-                  ref.read(authViewModelProvider.notifier).loginUser(
-                      email: emailController.text,
-                      password: passwordController.text);
+                  if (formKey.currentState!.validate()) {
+                    ref.read(authViewModelProvider.notifier).loginUser(
+                        email: emailController.text,
+                        password: passwordController.text);
+                  } else {
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                          content: Text("'Missing fields!'"),
+                        ),
+                      );
+                  }
                 },
               ),
               const SizedBox(
