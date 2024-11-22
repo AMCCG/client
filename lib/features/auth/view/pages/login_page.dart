@@ -2,19 +2,20 @@ import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/features/auth/repositories/auth_remote_repository.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:client/features/auth/view/widgets/custom_field.dart';
+import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:fpdart/fpdart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../widgets/auth_gradient_button.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -64,14 +65,9 @@ class _LoginPageState extends State<LoginPage> {
               AuthGradientButton(
                 buttonText: "Sign In",
                 onTap: () async {
-                  final res = await AuthRemoteRepository().login(
+                  ref.read(authViewModelProvider.notifier).loginUser(
                       email: emailController.text,
                       password: passwordController.text);
-                  final val = switch (res) {
-                    Left(value: final l) => l,
-                    Right(value: final r) => r,
-                  };
-                  print(val);
                 },
               ),
               const SizedBox(
