@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/core/utils.dart';
 import 'package:client/core/widget/custom_field.dart';
+import 'package:client/features/home/view/widgets/audio_wave.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,31 +25,27 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
 
   void selectAudio() async {
     final pickedAudio = await pickAudio();
-    if (selectedImage != null) {
-      setState(
-        () {
-          selectedImage = pickedAudio;
-        },
-      );
+    if (pickedAudio != null) {
+      setState(() {
+        selectedAudio = pickedAudio;
+      });
     }
   }
 
   void selectImage() async {
     final pickedImage = await pickImage();
     if (pickedImage != null) {
-      setState(
-        () {
-          selectedImage = pickedImage;
-        },
-      );
+      setState(() {
+        selectedImage = pickedImage;
+      });
     }
   }
 
   @override
   void dispose() {
+    super.dispose();
     songNameController.dispose();
     artistController.dispose();
-    super.dispose();
   }
 
   @override
@@ -116,12 +112,14 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
               SizedBox(
                 height: 40,
               ),
-              CustomField(
-                hintText: 'Pick Song',
-                controller: null,
-                readOnly: true,
-                onTap: selectAudio,
-              ),
+              selectedAudio != null
+                  ? AudioWave(path: selectedAudio!.path)
+                  : CustomField(
+                      hintText: 'Pick Song',
+                      controller: null,
+                      readOnly: true,
+                      onTap: selectAudio,
+                    ),
               SizedBox(
                 height: 20,
               ),
