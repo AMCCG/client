@@ -1,6 +1,7 @@
 import 'package:client/core/theme/app_pallete.dart';
+import 'package:client/core/utils.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
-import 'package:client/features/auth/view/widgets/custom_field.dart';
+import 'package:client/core/widget/custom_field.dart';
 import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,13 +38,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     ref.listen(authViewModelProvider, (prev, next) {
       next?.when(
         data: (data) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text('Account created successfully! Please login.'),
-              ),
-            );
+          showSnackBar(context, 'Account created successfully! Please login.');
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -52,13 +47,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           );
         },
         error: (error, str) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(error.toString()),
-              ),
-            );
+          showSnackBar(context, error.toString());
         },
         loading: () {},
       );
@@ -118,13 +107,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 password: passwordController.text,
                               );
                         } else {
-                          ScaffoldMessenger.of(context)
-                            ..hideCurrentSnackBar()
-                            ..showSnackBar(
-                              SnackBar(
-                                content: Text("'Missing fields!'"),
-                              ),
-                            );
+                          showSnackBar(context, 'Missing fields!');
                         }
                       },
                     ),

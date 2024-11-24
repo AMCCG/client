@@ -1,6 +1,7 @@
 import 'package:client/core/theme/app_pallete.dart';
+import 'package:client/core/utils.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
-import 'package:client/features/auth/view/widgets/custom_field.dart';
+import 'package:client/core/widget/custom_field.dart';
 import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,13 +72,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         email: emailController.text,
                         password: passwordController.text);
                   } else {
-                    ScaffoldMessenger.of(context)
-                      ..hideCurrentSnackBar()
-                      ..showSnackBar(
-                        SnackBar(
-                          content: Text("'Missing fields!'"),
-                        ),
-                      );
+                    showSnackBar(context, "Missing fields!");
                   }
                 },
               ),
