@@ -27,7 +27,7 @@ class _AudioWaveState extends State<AudioWave> {
 
   Future<void> playerAndPause() async {
     if (!playerController.playerState.isPlaying) {
-      await playerController.startPlayer(finishMode: FinishMode.stop);
+      await playerController.startPlayer(forceRefresh: true);
     } else if (!playerController.playerState.isPaused) {
       await playerController.pausePlayer();
     }
