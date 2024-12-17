@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/core/utils.dart';
+import 'package:client/features/home/model/fav_song_model.dart';
 import 'package:client/features/home/model/song_model.dart';
 import 'package:client/features/home/repository/home_local_repository.dart';
 import 'package:client/features/home/repository/home_repository.dart';
@@ -14,7 +15,9 @@ part 'home_viewmodel.g.dart';
 
 @riverpod
 Future<List<SongModel>> getAllSongs(Ref ref) async {
-  final token = ref.watch(currentUserNotifierProvider)!.token;
+  final token = ref.watch(
+    currentUserNotifierProvider.select((user) => user!.token),
+  );
   final res = await ref.watch(homeRepositoryProvider).getAllSongs(token: token);
   return switch (res) {
     Left(value: final l) => throw l.message,
@@ -77,7 +80,34 @@ class HomeViewModel extends _$HomeViewModel {
     final val = switch (res) {
       Left(value: final l) => state =
           AsyncValue.error(l.message, StackTrace.current),
-      Right(value: final r) => state = AsyncValue.data(r),
+      Right(value: final r) => state = _favSongSuccess(r, songId),
     };
+  }
+
+  AsyncValue _favSongSuccess(bool isFavorited, String songId) {
+    final userNotifier = ref.read(currentUserNotifierProvider.notifier);
+    if (isFavorited) {
+      userNotifier.addUser(
+        ref.read(currentUserNotifierProvider)!.copyWith(
+          favorites: [
+            ...ref.read(currentUserNotifierProvider)!.favorites,
+            FavSongModel(id: '', song_id: songId, user_id: '')
+          ],
+        ),
+      );
+    } else {
+      userNotifier.addUser(
+        ref.read(currentUserNotifierProvider)!.copyWith(
+          favorites: [
+            ...ref
+                .read(currentUserNotifierProvider)!
+                .favorites
+                .where((fav) => fav.song_id != songId),
+          ],
+        ),
+      );
+    }
+    ref.invalidate(getFavSongsProvider);
+    return state = AsyncValue.data(isFavorited);
   }
 }

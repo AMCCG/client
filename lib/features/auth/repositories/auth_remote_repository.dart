@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/failure/failure.dart';
-import '../model/user_model.dart';
+import '../../../core/model/user_model.dart';
 
 part 'auth_remote_repository.g.dart';
 
